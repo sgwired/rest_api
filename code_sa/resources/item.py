@@ -10,6 +10,11 @@ class Item(Resource):
         required=True,
         help="A price is required!"
     )
+    parser.add_argument('store_id',
+        type=int,
+        required=True,
+        help="A store_id is required!"
+    )
 
     @jwt_required()
     def get(self, name):
@@ -24,7 +29,7 @@ class Item(Resource):
         
         data = Item.parser.parse_args()
         
-        item = ItemModel(name, data['price']) # need an item model mot dict
+        item = ItemModel(name, data['price'], data['store_id']) # need an item model mot dict
 
         try: 
             item.save_to_db()
@@ -45,7 +50,7 @@ class Item(Resource):
         item = ItemModel.find_by_name(name)
 
         if item is None:
-            item = ItemModel(name, data['price'])
+            item = ItemModel(name, data['price'], data['store_id']) # or **data
         else:
             item.price = data['price']
         
